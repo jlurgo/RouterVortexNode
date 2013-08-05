@@ -53,6 +53,6 @@ var onRequest = function(request, response) {
     }   
     response.end();
   }
-
-http.createServer(onRequest).listen(8888);
-console.log('Arrancó la cosa');
+var puerto = process.env.PORT || 3000;
+http.createServer(onRequest).listen(puerto);
+console.log('Arrancó la cosa en ' + puerto);
