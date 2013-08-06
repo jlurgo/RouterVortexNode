@@ -44,6 +44,7 @@ var onRequest = function(request, response) {
                         sesion.recibirMensajePorHttp(mensajes_desde_el_cliente[i]);    
                         if(mensajes_desde_el_cliente[i].tipoDeMensaje == "vortex.video.frame"){
                             console.log("Recibido un frame de " + mensajes_desde_el_cliente[i].usuarioTransmisor);
+                            
                         }
                     }  
                 }
