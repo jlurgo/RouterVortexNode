@@ -18,7 +18,8 @@ var router = new NodoRouter("principal");
 var onRequest = function(request, response) {
     response.writeHead(200, {
         'Content-Type': 'text/html;charset=UTF-8',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods':'GET, POST'        
     });
     var request_spliteado = request.url.split('/');
     if(request_spliteado.length == 2 && request_spliteado[1] == "create"){
@@ -37,11 +38,13 @@ var onRequest = function(request, response) {
                 body += chunk.toString();
               });
             request.on('end', function () {
-                var mensajes_desde_el_cliente = JSON.parse(qs.parse(body).mensajes_vortex).contenidos;
-                for(var i=0; i<mensajes_desde_el_cliente.length; i++){
-                    sesion.recibirMensajePorHttp(mensajes_desde_el_cliente[i]);     
-                    console.log('POSTed: ' + JSON.stringify(mensajes_desde_el_cliente[i]));
-                }         
+                console.log("Evento end");
+                if(body!=""){
+                    var mensajes_desde_el_cliente = JSON.parse(qs.parse(body).mensajes_vortex).contenidos;
+                    for(var i=0; i<mensajes_desde_el_cliente.length; i++){
+                        sesion.recibirMensajePorHttp(mensajes_desde_el_cliente[i]);     
+                    }  
+                }
               });
             var mensajes_para_el_cliente = sesion.getMensajesRecibidos();    
             response.write(JSON.stringify(
