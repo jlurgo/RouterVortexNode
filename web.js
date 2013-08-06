@@ -1,8 +1,8 @@
 var http = require("http");
 var url = require("url");
 var qs = require('querystring');
-var NodoSesionHttpServer = require("./Vortexjs/NodoSesionHttpServer").clase;
-var NodoRouter = require("./Vortexjs/NodoRouter").clase;
+var NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;
+var NodoRouter = require("./NodoRouter").clase;
 
 
 var pad = function (n, width, z) {
