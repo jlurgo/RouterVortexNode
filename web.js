@@ -28,33 +28,34 @@ var onRequest = function(request, response) {
         router.conectarCon(sesion);
         sesion.conectarCon(router);
         response.write(pad(sesiones.length-1, 4));
+        sesion.mensajeParcial = "";
     }    
     if(request_spliteado.length == 3 && request_spliteado[1] == "session"){  
         var nro_sesion = parseInt(request_spliteado[2]);
         if(nro_sesion<sesiones.length){
             var sesion = sesiones[nro_sesion];        
-            var body = "";
             request.on('data', function (chunk) {
-                body += chunk.toString();
+                sesion.mensajeParcial += chunk.toString();
               });
             request.on('end', function () {
-                if(body!=""){                    
-                    var mensajes_desde_el_cliente = JSON.parse(qs.parse(body).mensajes_vortex).contenidos;
+                if(sesion.mensajeParcial!=""){                    
+                    var mensajes_desde_el_cliente = JSON.parse(qs.parse(sesion.mensajeParcial).mensajes_vortex).contenidos;
                     for(var i=0; i<mensajes_desde_el_cliente.length; i++){
                         sesion.recibirMensajePorHttp(mensajes_desde_el_cliente[i]);    
                         if(mensajes_desde_el_cliente[i].tipoDeMensaje == "vortex.video.frame"){
-                            console.log("Recibido un frame de " + mensajes_desde_el_cliente[i].usuarioTransmisor);
-                            
+                            console.log("Recibido un frame de " + mensajes_desde_el_cliente[i].usuarioTransmisor);                            
                         }
                     }  
+                    sesion.mensajeParcial = "";
                 }
-              });
+                
+            });
             var mensajes_para_el_cliente = sesion.getMensajesRecibidos();    
             response.write(JSON.stringify(
                 {contenidos:mensajes_para_el_cliente,
                  proximaEsperaMinima:0,
                  proximaEsperaMaxima:300000
-                }));
+                }));  
         }
     }   
     response.end();
