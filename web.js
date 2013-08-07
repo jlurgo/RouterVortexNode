@@ -3,7 +3,8 @@ var url = require("url");
 var qs = require('querystring');
 var NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;
 var NodoRouter = require("./NodoRouter").clase;
-
+var NodoConectorSocket = require("./NodoConectorSocket").clase;
+var io = require('socket.io').listen(81);
 
 var pad = function (n, width, z) {
   z = z || '0';
@@ -73,4 +74,11 @@ var onRequest = function(request, response) {
   }
 var puerto = process.env.PORT || 3000;
 http.createServer(onRequest).listen(puerto);
+
+io.sockets.on('connection', function (socket) {
+    console.log("nueva conexion socket");
+    var sesion_socket = new NodoConectorSocket(socket);
+    router.conectarBidireccionalmenteCon(sesion_socket);
+});
+
 console.log('Arrancó la cosa en ' + puerto);
