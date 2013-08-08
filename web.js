@@ -4,7 +4,9 @@ var qs = require('querystring');
 var NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;
 var NodoRouter = require("./NodoRouter").clase;
 var NodoConectorSocket = require("./NodoConectorSocket").clase;
-var io = require('socket.io').listen(81);
+
+var puerto = process.env.PORT || 3000;
+var io = require('socket.io').listen(puerto);
 
 var pad = function (n, width, z) {
   z = z || '0';
