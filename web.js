@@ -6,7 +6,11 @@ var NodoRouter = require("./NodoRouter").clase;
 var NodoConectorSocket = require("./NodoConectorSocket").clase;
 
 var puerto = process.env.PORT || 3000;
-var io = require('socket.io').listen(puerto);
+var app = http.createServer(function(req, res){
+    res.writeHead(200);
+    res.end();
+}).listen(puerto);
+var io = require('socket.io').listen(app);
 
 var pad = function (n, width, z) {
   z = z || '0';
@@ -97,6 +101,7 @@ io.sockets.on('connection', function (socket) {
 io.configure(function () { 
     io.set("transports", ["xhr-polling"]); 
     io.set("polling duration", 10); 
+    io.set("origins", "*");
 });
 
 
