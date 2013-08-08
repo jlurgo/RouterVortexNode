@@ -36,7 +36,12 @@ var onRequest = function(request, response) {
     if(request_spliteado.length == 3 && request_spliteado[1] == "session"){  
         var nro_sesion = parseInt(request_spliteado[2]);
         if(nro_sesion>=sesiones.length){
-            response.writeHead(405, "La sesion no existe", {'Content-Type': 'text/html'});
+                response.writeHead(405, 
+                       "La sesión no existe", 
+                       {'Content-Type': 'text/html',  
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods':'GET, POST' 
+                       });
             response.end();
         }
         var sesion = sesiones[nro_sesion];        
@@ -69,7 +74,12 @@ var onRequest = function(request, response) {
         }); 
         return;
     }   
-    response.writeHead(405, "Comando no reconocido", {'Content-Type': 'text/html'});
+    response.writeHead(405, 
+                       "Comando no reconocido", 
+                       {'Content-Type': 'text/html',  
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods':'GET, POST' 
+                       });
     response.end();
   }
 var puerto = process.env.PORT || 3000;
