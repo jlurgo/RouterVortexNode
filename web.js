@@ -15,7 +15,7 @@ var pad = function (n, width, z) {
 var sesiones = [];
 
 var router = new NodoRouter("principal");
-
+/*
 var onRequest = function(request, response) {
     var request_spliteado = request.url.split('/');
     if(request_spliteado.length == 2 && request_spliteado[1] == "create"){
@@ -84,6 +84,7 @@ var onRequest = function(request, response) {
   }
 var puerto = process.env.PORT || 3000;
 http.createServer(onRequest).listen(puerto);
+*/
 
 io.sockets.on('connection', function (socket) {
     console.log("nueva conexion socket");
@@ -97,4 +98,4 @@ io.configure(function () {
 });
 
 
-console.log('Arrancó la cosa en ' + puerto);
+//console.log('Arrancó la cosa en ' + puerto);
