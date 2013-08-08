@@ -13,8 +13,8 @@
     <script src="NodoConectorSocket.js"></script>
     <script>
         $(function(){
-            //var socket = io.connect('http://localhost:3000');
-            var socket = io.connect('http://router-vortex.herokuapp.com:3000');
+            var socket = io.connect('http://localhost:3000');
+            //var socket = io.connect('http://router-vortex.herokuapp.com');
             var portal = new NodoPortalBidi();            
             var conector_socket = new NodoConectorSocket(socket);
             portal.conectarCon(conector_socket);
