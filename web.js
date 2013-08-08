@@ -5,13 +5,6 @@ var NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;
 var NodoRouter = require("./NodoRouter").clase;
 var NodoConectorSocket = require("./NodoConectorSocket").clase;
 
-var puerto = process.env.PORT || 3000;
-var app = http.createServer(function(req, res){
-    res.writeHead(200);
-    res.end();
-}).listen(puerto);
-var io = require('socket.io').listen(app);
-
 var pad = function (n, width, z) {
   z = z || '0';
   n = n + '';
@@ -21,7 +14,7 @@ var pad = function (n, width, z) {
 var sesiones = [];
 
 var router = new NodoRouter("principal");
-/*
+
 var onRequest = function(request, response) {
     var request_spliteado = request.url.split('/');
     if(request_spliteado.length == 2 && request_spliteado[1] == "create"){
@@ -87,10 +80,13 @@ var onRequest = function(request, response) {
                         'Access-Control-Allow-Methods':'GET, POST' 
                        });
     response.end();
-  }
+  };
+//var puerto = process.env.PORT || 3000;
+//http.createServer(onRequest).listen(puerto);
+
 var puerto = process.env.PORT || 3000;
-http.createServer(onRequest).listen(puerto);
-*/
+var app = http.createServer(onRequest).listen(puerto);
+var io = require('socket.io').listen(app);
 
 io.sockets.on('connection', function (socket) {
     console.log("nueva conexion socket");
