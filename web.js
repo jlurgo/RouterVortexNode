@@ -81,4 +81,10 @@ io.sockets.on('connection', function (socket) {
     router.conectarBidireccionalmenteCon(sesion_socket);
 });
 
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
+
+
 console.log('Arrancó la cosa en ' + puerto);

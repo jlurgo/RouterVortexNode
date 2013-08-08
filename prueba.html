@@ -5,15 +5,16 @@
         <input type="button" id="btn_enviar_mensaje" value="Enviar"/>
     </body>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
-    <script src="socket.io.js"></script>
     <script src="FiltrosYTransformaciones.js"></script>
     <script src="GeneradorDeIdMensaje.js"></script>
     <script src="NodoPortalBidi.js"></script>
     <script src="PataConectora.js"></script>
+    <script src="socket.io.js"></script>
     <script src="NodoConectorSocket.js"></script>
     <script>
         $(function(){
             var socket = io.connect('http://localhost:81');
+            //var socket = io.connect('http://router-vortex.herokuapp.com');
             var portal = new NodoPortalBidi();            
             var conector_socket = new NodoConectorSocket(socket);
             portal.conectarCon(conector_socket);
