@@ -1,9 +1,10 @@
 var http = require("http");
 var url = require("url");
 var qs = require('querystring');
-var NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;
-var NodoRouter = require("./NodoRouter").clase;
-var NodoConectorSocket = require("./NodoConectorSocket").clase;
+var Vortex = require("vortexjs")
+var NodoSesionHttpServer = Vortex.NodoSesionHttpServer; //require("./VortexJS/NodoSesionHttpServer").clase;
+var NodoRouter = Vortex.NodoRouter; // require("./VortexJS/NodoRouter").clase;
+var NodoConectorSocket = Vortex.NodoConectorSocket; // require("./VortexJS/NodoConectorSocket").clase;
 
 var pad = function (n, width, z) {
   z = z || '0';
