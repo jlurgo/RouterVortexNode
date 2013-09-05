@@ -13,52 +13,52 @@ if(typeof(require) != "undefined"){
 
 var NodoPortalBidi = function(aliasPortal){
     this._listaPedidos = [];
-    this._pata = { 
-            recibirMensaje : function(un_mensaje){},
-            publicarFiltro : function(un_filtro){},
-            filtroRecibido : function(){ return new FiltroFalse();}
-        };
+    this._pata = new PataConectora(0, new GeneradorDeIdMensaje());
     this._alias_portal = "portal " + aliasPortal;
 };
-NodoPortalBidi.prototype = {
-    publicarFiltros : function(){
-        var filtros = [];
-        this._listaPedidos.forEach(function(p){
-            filtros.push(p.filtro);
-        });
-        var filtroMergeado = new FiltroOR(filtros).simplificar();
-        this._pata.publicarFiltro(filtroMergeado);
-    },
-    enviarMensaje : function(un_mensaje){
+
+NodoPortalBidi.prototype.publicarFiltros = function(){
+    var filtros = [];
+    this._listaPedidos.forEach(function(p){
+        filtros.push(p.filtro);
+    });
+    var filtroMergeado = new FiltroOR(filtros).simplificar();
+    this._pata.publicarFiltro(filtroMergeado);
+};
+
+NodoPortalBidi.prototype.enviarMensaje = function(un_mensaje){
+    this._pata.recibirMensaje(un_mensaje);
+};
+
+NodoPortalBidi.prototype.pedirMensajes = function( filtro, callback){
+    this._listaPedidos.push({ "filtro": filtro, "callback": callback});
+    this.publicarFiltros();
+};
+
+NodoPortalBidi.prototype.recibirMensaje = function(un_mensaje) {
+    //console.log('mensaje recibido en ' + this._alias_portal, un_mensaje);
+    if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
         this._pata.recibirMensaje(un_mensaje);
-    },
-    pedirMensajes : function( filtro, callback){
-        this._listaPedidos.push({ "filtro": filtro, "callback": callback});
-        this.publicarFiltros();
-    },
-    recibirMensaje : function(un_mensaje) {
-        //console.log('mensaje recibido en ' + this._alias_portal, un_mensaje);
-        if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
-            this._pata.recibirMensaje(un_mensaje);
-            return;
+        return;
+    }   
+    this._listaPedidos.forEach(function (pedido) {					
+        if(pedido.filtro.evaluarMensaje(un_mensaje)){
+            pedido.callback(un_mensaje);
         }
-        this._listaPedidos.forEach(function (pedido) {					
-                    if(pedido.filtro.evaluarMensaje(un_mensaje)){
-                        pedido.callback(un_mensaje);
-                    }
-                });	        
-    },
-    conectarCon : function(un_receptor){
-        this._pata = new PataConectora(0, new GeneradorDeIdMensaje());
-        this.publicarFiltros();
-        this._pata.conectarCon(un_receptor);
-    },
-    conectadoBidireccionalmente : function(){
-        return this._pata.conectadaBidireccionalmente();
-    },
-    filtroDeSalida : function(){
-        return this._pata.filtroRecibido();
-    }
+    });	        
+};
+
+NodoPortalBidi.prototype.conectarCon = function(un_receptor){
+    this.publicarFiltros();
+    this._pata.conectarCon(un_receptor);
+};
+
+NodoPortalBidi.prototype.conectadoBidireccionalmente = function(){
+    return this._pata.conectadaBidireccionalmente();
+};
+
+NodoPortalBidi.prototype.filtroDeSalida = function(){
+    return this._pata.filtroRecibido();
 };
 
 if(typeof(require) != "undefined"){ exports.clase = NodoPortalBidi;}

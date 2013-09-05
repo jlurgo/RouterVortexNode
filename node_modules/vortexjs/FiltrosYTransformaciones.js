@@ -221,7 +221,7 @@ FiltroOR.prototype = {
             if(!(filtros_acumulados_simplificados[i] instanceof FiltroFalse)) filtros_sin_false.push(filtros_acumulados_simplificados[i]); 
         }
         if(filtros_sin_false.length==1) return filtros_sin_false[0];
-        if(filtros_sin_false.length==0) return new FiltroTrue;
+        if(filtros_sin_false.length==0) return new FiltroFalse;
         return new FiltroOR(filtros_sin_false);
     }
 };

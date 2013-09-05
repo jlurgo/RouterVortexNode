@@ -17,6 +17,9 @@ var NodoPortalBidiMonoFiltro = function(aliasPortal){
             publicarFiltro : function(un_filtro){},
             filtroRecibido : function(){ return new FiltroFalse();}
 		};
+    var _this = this;
+    this.onFiltroRecibidoModificado= function(filtro){
+    };
     this._alias_portal = "portal " + aliasPortal;
 };
 NodoPortalBidiMonoFiltro.prototype = {
@@ -32,16 +35,22 @@ NodoPortalBidiMonoFiltro.prototype = {
 	},
     recibirMensaje : function(un_mensaje) {
         console.log('mensaje recibido en ' + this._alias_portal, un_mensaje);
-        if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
-            this._pata.recibirMensaje(un_mensaje);
-            return;
-        }				
+        if(un_mensaje.tipoDeMensaje !== undefined){
+            if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
+                this._pata.recibirMensaje(un_mensaje);
+                return;
+            }	
+        }			
         if(this._pedido.filtro.evaluarMensaje(un_mensaje)){
             this._pedido.callback(un_mensaje);
         }        
 	},
     conectarCon : function(un_receptor){
+        var _this = this;
 		this._pata = new PataConectora(0, new GeneradorDeIdMensaje());
+        this._pata.onFiltroRecibidoModificado = function(filtro){
+            _this.onFiltroRecibidoModificado(filtro);  
+        };
         this.publicarFiltros();
         this._pata.conectarCon(un_receptor);
 	},

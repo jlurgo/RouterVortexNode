@@ -28,6 +28,7 @@ var PataConectora = function(idLocalPata, generadorDeIdMensaje, aliasNodo){
     };       
     this.publicarFiltro = this.publicarFiltro_cuandoLaPataNoEsBidi;   
     this._alias_nodo = aliasNodo;
+    this.onFiltroRecibidoModificado = function(){};  
 };
 
 PataConectora.prototype = {
@@ -157,11 +158,7 @@ PataConectora.prototype = {
 			default:
 			this.filtrarYEnviarMensaje(un_mensaje);
 		}
-    },            
-    onFiltroRecibidoModificado : function(){
-        
-    },        
-    publicarFiltro : this.publicarFiltro_cuandoLaPataNoEsBidi,    
+    },                    
 	conectarCon : function (un_receptor) {
 		this._receptor = un_receptor;
 		this.enviarPedidoDeIdRemoto();
