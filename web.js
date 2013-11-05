@@ -68,10 +68,8 @@ app.post('/session/:nro_sesion', function(request, response){
     }); 
 });
 
-var puerto = process.env.PORT || 3000;
-app.listen(puerto);
-
-var io = require('socket.io').listen(app);
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket) {
     console.log("nueva conexion socket");
@@ -80,9 +78,13 @@ io.sockets.on('connection', function (socket) {
 });
 
 io.configure(function () { 
-    io.set("transports", ["xhr-polling"]); 
+    io.set("transports", ['websocket', 'flashsocket', 'xhr-polling']); 
     io.set("polling duration", 10); 
+    io.disable('log');
 });
+
+var puerto = process.env.PORT || 3000;
+server.listen(puerto);
 
 
 //console.log('Arrancó la cosa en ' + puerto);
