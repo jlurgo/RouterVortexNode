@@ -3,6 +3,7 @@ var url = require("url");
 var qs = require('querystring');
 var Vortex = require('vortexjs');
 var express = require('express');
+var clarinet = require('clarinet');
 
 var NodoSesionHttpServer = Vortex.NodoSesionHttpServer;
 var NodoRouter = Vortex.NodoRouter;
@@ -28,6 +29,7 @@ var allowCrossDomain = function(req, res, next) {
 var app = express();
 
 app.use(allowCrossDomain);
+app.use(express.bodyParser());
 
 app.post('/create', function(request, response){
     var sesion = new NodoSesionHttpServer(sesiones.length);
@@ -44,18 +46,28 @@ app.post('/session/:nro_sesion', function(request, response){
         response.send("La sesión no existe");
         return;
     }
-    var sesion = sesiones[nro_sesion];        
+    var sesion = sesiones[nro_sesion];       
+    
+    var parser = clarinet.parser();
+    
+    parser.onopenarray = function () {
+      // opened an array.
+    };
+    parser.onclosearray = function () {
+      // closed an array.
+    };
+    
     request.on('data', function (chunk) {
         sesion.mensajeParcial += chunk.toString();
+        parser.write(chunk.toString());
     });
+    
     request.on('end', function () {
+        parser.close();
         if(sesion.mensajeParcial!=""){                    
             var mensajes_desde_el_cliente = JSON.parse(qs.parse(sesion.mensajeParcial).mensajes_vortex).contenidos;
             for(var i=0; i<mensajes_desde_el_cliente.length; i++){
                 sesion.recibirMensajePorHttp(mensajes_desde_el_cliente[i]);    
-                if(mensajes_desde_el_cliente[i].tipoDeMensaje == "vortex.video.frame"){
-                    console.log("Recibido un frame de " + mensajes_desde_el_cliente[i].usuarioTransmisor);                            
-                }
             }  
             sesion.mensajeParcial = "";
         }
