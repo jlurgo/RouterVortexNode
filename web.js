@@ -18,32 +18,31 @@ var sesiones = [];
 
 var router = new NodoRouter("principal");
 
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+}
+
 var app = express();
-app.get('/create', function(request, response){
+
+app.use(allowCrossDomain);
+
+app.post('/create', function(request, response){
     var sesion = new NodoSesionHttpServer(sesiones.length);
     sesiones.push(sesion);
     router.conectarCon(sesion);
     sesion.conectarCon(router);        
     sesion.mensajeParcial = "";
-    response.writeHead(200, {
-        'Content-Type': 'text/html;charset=UTF-8',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods':'GET, POST'        
-    });
-    response.write(pad(sesion.idSesion, 4));
-    response.end();
+    response.send(pad(sesion.idSesion, 4));
 });
 
-app.get('/create', function(request, response){
-    var nro_sesion = parseInt(request_spliteado[2]);
+app.post('/session/:nro_sesion', function(request, response){
+    var nro_sesion = parseInt(request.params.nro_sesion);
     if(nro_sesion>=sesiones.length){
-        response.writeHead(405, 
-           "La sesión no existe", 
-           {'Content-Type': 'text/html',  
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods':'GET, POST' 
-           });
-        response.end();
+        response.send("La sesión no existe");
+        return;
     }
     var sesion = sesiones[nro_sesion];        
     request.on('data', function (chunk) {
@@ -61,28 +60,17 @@ app.get('/create', function(request, response){
             sesion.mensajeParcial = "";
         }
         var mensajes_para_el_cliente = sesion.getMensajesRecibidos();  
-        response.writeHead(200, {
-            'Content-Type': 'text/html;charset=UTF-8',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods':'GET, POST'        
-        });
-        response.write(JSON.stringify(
+        response.send(JSON.stringify(
             {contenidos:mensajes_para_el_cliente,
              proximaEsperaMinima:0,
              proximaEsperaMaxima:300000
             }));
-        response.end();
     }); 
 });
 
 var puerto = process.env.PORT || 3000;
 app.listen(puerto);
 
-//var puerto = process.env.PORT || 3000;
-//http.createServer(onRequest).listen(puerto);
-
-
-//var app = http.createServer(onRequest).listen(puerto);
 var io = require('socket.io').listen(app);
 
 io.sockets.on('connection', function (socket) {

@@ -49,8 +49,13 @@ NodoPortalBidi.prototype.recibirMensaje = function(un_mensaje) {
 };
 
 NodoPortalBidi.prototype.conectarCon = function(un_receptor){
-    this.publicarFiltros();
+    //this.publicarFiltros();
     this._pata.conectarCon(un_receptor);
+};
+
+NodoPortalBidi.prototype.conectarBidireccionalmenteCon = function (otro_nodo) {
+    this.conectarCon(otro_nodo);
+    otro_nodo.conectarCon(this);
 };
 
 NodoPortalBidi.prototype.conectadoBidireccionalmente = function(){

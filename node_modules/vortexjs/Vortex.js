@@ -7,6 +7,7 @@ Project URL: https://sourceforge.net/p/vortexnet
 
 if(typeof(require) != "undefined"){
     exports.GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
+    exports.ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
     exports.PataConectora = require("./PataConectora").clase;
     exports.FiltrosYTransformaciones = require("./FiltrosYTransformaciones");
     exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
