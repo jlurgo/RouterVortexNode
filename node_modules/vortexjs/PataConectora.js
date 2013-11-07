@@ -10,7 +10,6 @@ if(typeof(require) != "undefined"){
     var FiltroOR = require("./FiltrosYTransformaciones").FiltroOR;
     var FiltroAND = require("./FiltrosYTransformaciones").FiltroAND;
     var DesSerializadorDeFiltros = require("./FiltrosYTransformaciones").DesSerializadorDeFiltros;
-    var ComparadorDeFiltros = require("./FiltrosYTransformaciones").ComparadorDeFiltros;
     var ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
 }
 
@@ -106,7 +105,7 @@ PataConectora.prototype = {
 		}
 	},
     publicarFiltro_cuandoLaPataEsBidi : function(filtro){
-        if(ComparadorDeFiltros.compararFiltros(filtro, this._filtroEnviado)) return;
+        if(filtro.equals(this._filtroEnviado)) return;
         var publicacionDeFiltro = {
 			tipoDeMensaje : "Vortex.Filtro.Publicacion",
             filtro: filtro.serializar()

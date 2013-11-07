@@ -42,9 +42,9 @@ describe("3 portales conectados bidireccionalmente a un router", function() {
     it("Los filtros de salida y de entrada de todos los portales deberian establecerse en filtros de tipo FALSE ya que ninguno pidio mensajes", function() {
         waits(100);   
         runs(function() { 
-            expect(ComparadorDeFiltros.compararFiltros(test.portal_1.filtroDeSalida(), new FiltroFalse())).toBeTruthy(); 
-            expect(ComparadorDeFiltros.compararFiltros(test.portal_2.filtroDeSalida(), new FiltroFalse())).toBeTruthy(); 
-            expect(ComparadorDeFiltros.compararFiltros(test.portal_3.filtroDeSalida(), new FiltroFalse())).toBeTruthy(); 
+            expect(test.portal_1.filtroDeSalida().equals(new FiltroFalse())).toBeTruthy(); 
+            expect(test.portal_2.filtroDeSalida().equals(new FiltroFalse())).toBeTruthy(); 
+            expect(test.portal_3.filtroDeSalida().equals(new FiltroFalse())).toBeTruthy(); 
         });    
     });    
 });
