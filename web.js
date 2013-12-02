@@ -14,7 +14,8 @@ var pad = function (n, width, z) {
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
-var sesiones = [];
+var sesiones_http = [];
+var sesiones_web_socket = [];
 
 var router = new NodoRouter("principal");
 
@@ -31,7 +32,7 @@ app.use(allowCrossDomain);
 
 app.post('/create', function(request, response){
     var sesion = new NodoSesionHttpServer(sesiones.length);
-    sesiones.push(sesion);
+    sesiones_http.push(sesion);
     router.conectarCon(sesion);
     sesion.conectarCon(router);        
     sesion.mensajeParcial = "";
@@ -40,11 +41,11 @@ app.post('/create', function(request, response){
 
 app.post('/session/:nro_sesion', function(request, response){
     var nro_sesion = parseInt(request.params.nro_sesion);
-    if(nro_sesion>=sesiones.length){
+    if(nro_sesion>=sesiones_http.length){
         response.send("La sesión no existe");
         return;
     }
-    var sesion = sesiones[nro_sesion];        
+    var sesion = sesiones_http[nro_sesion];        
     request.on('data', function (chunk) {
         sesion.mensajeParcial += chunk.toString();
     });
@@ -69,12 +70,10 @@ app.post('/session/:nro_sesion', function(request, response){
 });
 
 app.get('/infoSesiones', function(request, response){
-    var info_sesiones = [];
-    for(var i=0; i<sesiones.length; i++){
-        info_sesiones.push({
-            id: sesiones[i].idSesion
-        });
-    }
+    var info_sesiones = {
+        http: sesiones_http.length,
+        webSocket: sesiones_web_socket.length
+    };
     response.send(JSON.stringify(info_sesiones));
 });
 
@@ -85,6 +84,7 @@ io.sockets.on('connection', function (socket) {
     console.log("nueva conexion socket");
     var sesion_socket = new NodoConectorSocket(socket);
     router.conectarBidireccionalmenteCon(sesion_socket);
+    sesiones_web_socket.push(sesion_socket);
 });
 
 io.configure(function () { 
