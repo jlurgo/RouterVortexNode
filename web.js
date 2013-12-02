@@ -85,6 +85,15 @@ io.sockets.on('connection', function (socket) {
     var sesion_socket = new NodoConectorSocket(socket);
     router.conectarBidireccionalmenteCon(sesion_socket);
     sesiones_web_socket.push(sesion_socket);
+    socket.on('disconnect', function () {
+        var i_sesion_desconectada;
+        for(var i=0; i<sesiones_web_socket.length; i++){
+            if(sesiones_web_socket[i]===sesion_socket){
+                i_sesion_desconectada = i;
+            }
+        }
+        sesiones_web_socket.slice(i_sesion_desconectada, 1);
+    });
 });
 
 io.configure(function () { 
