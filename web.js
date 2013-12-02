@@ -31,7 +31,7 @@ var app = express();
 app.use(allowCrossDomain);
 
 app.post('/create', function(request, response){
-    var sesion = new NodoSesionHttpServer(sesiones.length);
+    var sesion = new NodoSesionHttpServer(sesiones_http.length);
     sesiones_http.push(sesion);
     router.conectarCon(sesion);
     sesion.conectarCon(router);        
@@ -86,13 +86,9 @@ io.sockets.on('connection', function (socket) {
     router.conectarBidireccionalmenteCon(sesion_socket);
     sesiones_web_socket.push(sesion_socket);
     socket.on('disconnect', function () {
-        var i_sesion_desconectada;
-        for(var i=0; i<sesiones_web_socket.length; i++){
-            if(sesiones_web_socket[i]===sesion_socket){
-                i_sesion_desconectada = i;
-            }
-        }
-        sesiones_web_socket.slice(i_sesion_desconectada, 1);
+        var index = sesiones_web_socket.indexOf(sesion_socket);
+        console.log('socket ' + index + ' desconectado');
+        sesiones_web_socket.splice(index, 1);        
     });
 });
 
