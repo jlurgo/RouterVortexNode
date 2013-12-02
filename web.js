@@ -68,6 +68,16 @@ app.post('/session/:nro_sesion', function(request, response){
     }); 
 });
 
+app.get('/infoSesiones', function(request, response){
+    var info_sesiones = [];
+    for(var i=0; i<sesiones.length; i++){
+        info_sesiones.push({
+            id: sesiones[i].idSesion
+        });
+    }
+    response.send(JSON.stringify(info_sesiones));
+});
+
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
