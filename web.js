@@ -54,9 +54,6 @@ app.post('/session/:nro_sesion', function(request, response){
             var mensajes_desde_el_cliente = JSON.parse(qs.parse(sesion.mensajeParcial).mensajes_vortex).contenidos;
             for(var i=0; i<mensajes_desde_el_cliente.length; i++){
                 sesion.recibirMensajePorHttp(mensajes_desde_el_cliente[i]);    
-                if(mensajes_desde_el_cliente[i].tipoDeMensaje == "vortex.video.frame"){
-                    console.log("Recibido un frame de " + mensajes_desde_el_cliente[i].usuarioTransmisor);                            
-                }
             }  
             sesion.mensajeParcial = "";
         }
