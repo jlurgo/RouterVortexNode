@@ -9,6 +9,9 @@ var DesSerializadorDeFiltros = {
         var filtro;
 		switch(un_filtro_serializado.tipo)
 		{
+            case 'EX':
+				filtro =  new FiltroXEjemplo();
+				break;
 			case 'EQ':
 				filtro =  new FiltroXClaveValor();
 				break;
@@ -34,6 +37,38 @@ var DesSerializadorDeFiltros = {
 if(typeof(require) != "undefined"){
     exports.DesSerializadorDeFiltros = DesSerializadorDeFiltros;
 }
+
+var FiltroXEjemplo = function (ejemplo) {
+    this.ejemplo = ejemplo;
+};
+FiltroXEjemplo.prototype = {    
+    evaluarMensaje : function (un_mensaje) {
+        for(var prop in this.ejemplo){
+            if(typeof un_mensaje[prop] == "object"){
+                var filtro_por_ejemplo = new FiltroXEjemplo(this.ejemplo[prop]);
+                if(!filtro_por_ejemplo.evaluarMensaje(un_mensaje[prop])) return false;
+            }
+            if(this.ejemplo[prop] != un_mensaje[prop]) return false;
+        }
+        return true;
+    },
+	serializar : function(){
+		return {
+            'tipo': 'EX',
+			'ejemplo': this.ejemplo
+        };
+	},
+	desSerializar : function(un_filtro_serializado){
+		this.ejemplo = un_filtro_serializado.ejemplo;
+	},
+    simplificar: function(){return this;},
+    equals: function(otro_filtro){
+        if(!(otro_filtro instanceof FiltroXEjemplo)) return false;
+        return this.ejemplo == otro_filtro.ejemplo;
+    }
+};
+if(typeof(require) != "undefined"){ exports.FiltroXClaveValor = FiltroXClaveValor;}
+
 
 var FiltroXClaveValor = function (clave, valor) {
 	this._clave = clave;
@@ -279,6 +314,7 @@ FiltroOR.prototype = {
 if(typeof(require) != "undefined"){ exports.FiltroOR = FiltroOR;}
 
 var FiltroDesconocido = function(){
+    this.version_serializada = {'tipo': '?'};
 };
 FiltroDesconocido.prototype = {
 	evaluarMensaje : function (un_mensaje) {
@@ -288,10 +324,10 @@ FiltroDesconocido.prototype = {
         this._observador = observador;
     },    
     serializar : function(){
-		var ret = {	'tipo': '?'};
-		return ret;
+		return this.version_serializada;
 	},	
 	desSerializar : function(un_filtro_serializado){
+        this.version_serializada = un_filtro_serializado;
 	},
     simplificar: function(){return this;}
 };
