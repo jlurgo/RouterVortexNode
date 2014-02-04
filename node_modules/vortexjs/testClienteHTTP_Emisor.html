@@ -24,12 +24,12 @@
     <script type="text/javascript" src="NodoConectorSocket.js"></script>
     <script>
         $(document).ready(function () {
-            var adaptador = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true, 1000);
+            //var adaptador = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true, 1000);
             //var adaptador = new NodoClienteHTTP('http://localhost:3000', 10, true, 5);
             
-            //var socket = io.connect('http://localhost:3000');    
+            var socket = io.connect('http://localhost:3000');    
             //var socket = io.connect('https://router-vortex.herokuapp.com');
-            //var adaptador = new NodoConectorSocket(socket);    
+            var adaptador = new NodoConectorSocket(socket);    
 
             var portal = new NodoPortalBidi();
             portal.conectarBidireccionalmenteCon(adaptador);

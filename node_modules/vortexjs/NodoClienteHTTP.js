@@ -3,6 +3,7 @@ Vortex by Vortex Group is licensed under a Creative Commons Reconocimiento 3.0 U
 To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.0/
 Project URL: https://sourceforge.net/p/vortexnet
 */
+
 var NodoClienteHTTP = function (url, intervalo_polling, verbose, mensajes_por_paquete) {
     this.url = url;
     this.intervalo_polling = (intervalo_polling === undefined) ? 1500 : intervalo_polling;
@@ -99,3 +100,8 @@ NodoClienteHTTP.prototype.recibirMensaje = function (un_mensaje) {
 NodoClienteHTTP.prototype.conectarCon = function (un_receptor) {
     this.receptor = un_receptor;
 };
+
+
+if(typeof(require) != "undefined"){
+    exports.clase = NodoClienteHTTP;
+}
