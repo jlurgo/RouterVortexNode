@@ -29,6 +29,8 @@ NodoAdaptadorBluetoothArduino.prototype.start = function(){
     
     this.portal.pedirMensajes(  new FiltroTrue(),
                                 function(mensaje){
+                                    delete mensaje.id_mensaje_vortex;
+                                    delete mensaje.idLocalAlReceptor;
                                     _this.conectorBluetooth.recibirMensaje(mensaje);
                                 });
 };

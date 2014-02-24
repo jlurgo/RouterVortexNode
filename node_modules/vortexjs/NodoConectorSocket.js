@@ -4,15 +4,16 @@ To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.
 Project URL: https://sourceforge.net/p/vortexnet
 */
 
-var NodoConectorSocket = function(socket){
+var NodoConectorSocket = function(socket, verbose){
     this.socket = socket;
+    this.verbose = verbose||false;
     this.start();
 };
 
 NodoConectorSocket.prototype.start = function(){
     var _this = this;
     this.socket.on('mensaje_vortex', function (mensaje) {
-        //console.log("conector recibe mensaje por socket:", mensaje);
+        if(this.verbose) console.log("conector recibe mensaje por socket:", mensaje);
         _this.receptor.recibirMensaje(mensaje);
     });
 };
@@ -22,7 +23,7 @@ NodoConectorSocket.prototype.conectarCon = function(un_nodo){
 };
 
 NodoConectorSocket.prototype.recibirMensaje = function(mensaje){  
-    //console.log("conector envia mensaje por socket:", mensaje);
+    if(this.verbose) console.log("conector envia mensaje por socket:", mensaje);
     this.socket.emit('mensaje_vortex', mensaje);
 };
 

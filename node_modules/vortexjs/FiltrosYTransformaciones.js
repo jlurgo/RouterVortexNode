@@ -67,7 +67,7 @@ FiltroXEjemplo.prototype = {
         return this.ejemplo == otro_filtro.ejemplo;
     }
 };
-if(typeof(require) != "undefined"){ exports.FiltroXClaveValor = FiltroXClaveValor;}
+if(typeof(require) != "undefined"){ exports.FiltroXEjemplo = FiltroXEjemplo;}
 
 
 var FiltroXClaveValor = function (clave, valor) {
