@@ -3,8 +3,8 @@ var FiltroXEjemplo = require("./FiltrosYTransformaciones").FiltroXEjemplo;
 
 vx.start({verbose:true});
 vx.conectarPorWebSockets({
-    url:'https://router-vortex.herokuapp.com' 
-    //url:'http://localhost:3000'
+    //url:'https://router-vortex.herokuapp.com' 
+    url:'http://localhost:3000'
 });   
 
 vx.pedirMensajes({

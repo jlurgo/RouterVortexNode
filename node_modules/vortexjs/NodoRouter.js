@@ -10,6 +10,7 @@ if(typeof(require) != "undefined"){
     var PataConectora = require("./PataConectora").clase;
     var FiltroOR = require("./FiltrosYTransformaciones").FiltroOR;
     var FiltroAND = require("./FiltrosYTransformaciones").FiltroAND;
+    var FiltroFalse = require("./FiltrosYTransformaciones").FiltroFalse;
 }
 
 var NodoRouter = function(aliasRouter){
@@ -25,10 +26,11 @@ NodoRouter.prototype.mergearFiltrosParaUnaPata = function(pata){
         if(p === pata ) return;
         filtrosParaLaPata.push(p.filtroRecibido());
     });
+    var filtroAPublicarALaPata = new FiltroFalse();
     if(filtrosParaLaPata.length>0){
-        var filtroAPublicarALaPata = new FiltroOR(filtrosParaLaPata).simplificar();
-        pata.publicarFiltro(filtroAPublicarALaPata);
+        filtroAPublicarALaPata = new FiltroOR(filtrosParaLaPata).simplificar();  
     }
+    pata.publicarFiltro(filtroAPublicarALaPata);
 }
 
 NodoRouter.prototype.mergearYEnviarFiltros = function(){
@@ -50,13 +52,28 @@ NodoRouter.prototype.recibirMensaje = function (un_mensaje) {
 
 NodoRouter.prototype.conectarCon = function(un_receptor) {
 	var nuevaPata = new PataConectora(this._proximoIdPata, this._generadorDeIdMensaje);
-	this._proximoIdPata++;
+	this._proximoIdPata+=1;
     this._patas.push(nuevaPata);
 	nuevaPata.conectarCon(un_receptor);
-    var self = this;
+    var _this = this;
     nuevaPata.onFiltroRecibidoModificado = function(){
-        self.mergearYEnviarFiltros();
+        _this.mergearYEnviarFiltros();
     };
+};
+
+NodoRouter.prototype.desconectarDe = function(un_receptor) {
+    var pata;
+    for(var i=0; i<this._patas.length;i++){
+        if(this._patas[i]._receptor === un_receptor){
+            pata = this._patas[i];
+            pata.desconectar();
+        }
+    }
+    if(pata) {
+        un_receptor.desconectarDe(this);
+        this._patas.splice(this._patas.indexOf(pata), 1);
+        this.mergearYEnviarFiltros();
+    } 
 };
 
 NodoRouter.prototype.conectarBidireccionalmenteCon = function(un_nodo) {

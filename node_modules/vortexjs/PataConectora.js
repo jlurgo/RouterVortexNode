@@ -162,7 +162,12 @@ PataConectora.prototype = {
 	conectarCon : function (un_receptor) {
 		this._receptor = un_receptor;
 		this.enviarPedidoDeIdRemoto();
-    },        
+    },   
+    desconectar: function () {
+		this._receptor = {
+            recibirMensaje: function (un_mensaje) { }
+        }; 
+    },
     conectadaBidireccionalmente : function(){
         return this._laPataEsBidireccional;
     }

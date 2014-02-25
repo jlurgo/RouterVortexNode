@@ -23,7 +23,7 @@ if(typeof(require) != "undefined"){
     exports.NodoPortalBidiMonoFiltro = require("./NodoPortalBidiMonoFiltro").clase;
     exports.NodoConectorSocket = NodoConectorSocket;    
     //exports.NodoClienteHTTP = NodoClienteHTTP;    
-    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;   
+    exports.NodoConectorHttpServer = require("./NodoConectorHttpServer").clase;   
     
 }
 
@@ -49,9 +49,11 @@ var Vortex = Vx = vX = vx = {
         this.router.conectarBidireccionalmenteCon(this.adaptadorArduino);
     },
     pedirMensajes: function(p){
+        var filtro = p.filtro;
+        if(p.filtro.evaluarMensaje === undefined) filtro = new FiltroXEjemplo(p.filtro);    //si no tiene el método evaluarMensaje, no es un filtro. creo uno usando ese objeto como ejemplo
         var portal = new NodoPortalBidi("portal" + this.portales.length);
         portal.conectarBidireccionalmenteCon(this.router);        
-        portal.pedirMensajes(p.filtro, p.callback); 
+        portal.pedirMensajes(filtro, p.callback); 
         this.portales.push(portal);
         return this.portales.length - 1; //devuelvo id del portal/pedido para que el cliente pueda darlos de baja
     },
