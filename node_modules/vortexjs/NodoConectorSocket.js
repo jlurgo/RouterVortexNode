@@ -15,7 +15,7 @@ var NodoConectorSocket = function(opt){
 NodoConectorSocket.prototype.start = function(){
     var _this = this;
     this.socket.on('mensaje_vortex', function (mensaje) {
-        if(this.verbose) console.log("conector recibe mensaje por socket:", mensaje);
+        if(_this.verbose) console.log("conector recibe mensaje por socket:", mensaje);
         _this.receptor.recibirMensaje(mensaje);
     });
     this.socket.on('disconnect', function () {
