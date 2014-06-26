@@ -37,10 +37,12 @@ NodoPortalBidi.prototype.pedirMensajes = function( filtro, callback){
 
 NodoPortalBidi.prototype.recibirMensaje = function(un_mensaje) {
     //console.log('mensaje recibido en ' + this._alias_portal, un_mensaje);
-    if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
-        this._pata.recibirMensaje(un_mensaje);
-        return;
-    }   
+    if(un_mensaje.tipoDeMensaje !== undefined){
+		if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
+			this._pata.recibirMensaje(un_mensaje);
+			return;
+		}
+	}
     this._listaPedidos.forEach(function (pedido) {					
         if(pedido.filtro.evaluarMensaje(un_mensaje)){
             pedido.callback(un_mensaje);

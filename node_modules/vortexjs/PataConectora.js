@@ -29,6 +29,7 @@ var PataConectora = function(idLocalPata, generadorDeIdMensaje, aliasNodo){
     this.publicarFiltro = this.publicarFiltro_cuandoLaPataNoEsBidi;   
     this._alias_nodo = aliasNodo;
     this.onFiltroRecibidoModificado = function(){};  
+	this.ids_mensajes_enviados_unidireccionalmente = [];
 };
 
 PataConectora.prototype = {
@@ -125,19 +126,33 @@ PataConectora.prototype = {
         this.publicarFiltro = this.publicarFiltro_cuandoLaPataEsBidi;
         if(!(this._filtroAEnviar === undefined)) this.publicarFiltro(this._filtroAEnviar);
         this._laPataEsBidireccional = true;
+		this.ids_mensajes_enviados_unidireccionalmente = [];
     },
     filtrarYEnviarMensaje : function(un_mensaje){
-        if(un_mensaje.idLocalAlReceptor == this._idLocal) return; //si el mensaje llegó por esta pata no se lo reenvío
+		if(this.elMensajePasoPorEstaPata(un_mensaje)) return;
         if(!this._filtroRecibido.evaluarMensaje(un_mensaje)) return;
         var mensaje_enviado;
         if(un_mensaje.id_mensaje_vortex === undefined) mensaje_enviado = this.enviarMensajePropio(un_mensaje);        
 		else mensaje_enviado = this.enviarMensaje(un_mensaje);	
-        //console.log("Pata del Nodo " + mensaje_enviado.id_mensaje_vortex.id_del_emisor + " envia mensaje:", mensaje_enviado); //log
-	},    
+		if(!this.conectadaBidireccionalmente()){
+			this.ids_mensajes_enviados_unidireccionalmente.push(mensaje_enviado.id_mensaje_vortex);
+		}
+	},   
+	elMensajePasoPorEstaPata: function(un_mensaje){
+		if(this.conectadaBidireccionalmente()){
+			if(un_mensaje.idLocalAlReceptor == this._idLocal) return true;
+		}
+		for(var i=0; i< this.ids_mensajes_enviados_unidireccionalmente.length; i++){
+			if(this.compararIdsMensajes(un_mensaje.id_mensaje_vortex, this.ids_mensajes_enviados_unidireccionalmente[i])){
+				return true;
+			}
+		}
+		return false;
+	},
     filtroRecibido : function(){
         return this._filtroRecibido;
     },        
-    recibirMensaje : function (un_mensaje) {	
+    recibirMensaje : function (un_mensaje) {
 		switch(un_mensaje.tipoDeMensaje)
 		{
 			case "Vortex.IdRemoto.Pedido":
