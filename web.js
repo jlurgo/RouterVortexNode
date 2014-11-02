@@ -35,7 +35,7 @@ app.use(allowCrossDomain);
 app.post('/create', function(request, response){
     var conector_http = new NodoConectorHttpServer({
         id: pad(ultimo_id_sesion_http, 4),
-        verbose:true,
+        verbose:false,
         app: app,
         alDesconectar: function(){
             sesiones_http.splice(sesiones_http.indexOf(conector_http), 1);
@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
     var conector_socket = new NodoConectorSocket({
         id: ultimo_id_sesion_ws.toString(),
         socket: socket, 
-        verbose: true, 
+        verbose: false, 
         alDesconectar:function(){
             sesiones_web_socket.splice(sesiones_web_socket.indexOf(conector_socket), 1);
         }
@@ -80,4 +80,4 @@ var puerto = process.env.PORT || 3000;
 server.listen(puerto);
 
 
-//console.log('Arrancó la cosa en ' + puerto);
+console.log('Arrancó la cosa en ' + puerto);
