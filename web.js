@@ -28,14 +28,17 @@ var allowCrossDomain = function(req, res, next) {
 
 var app = express();
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io')(server, {
+	'transports': ["websocket", "polling"],
+//	"polling duration": 10						  
+});
 
 app.use(allowCrossDomain);
 
 app.post('/create', function(request, response){
     var conector_http = new NodoConectorHttpServer({
         id: pad(ultimo_id_sesion_http, 4),
-        verbose:false,
+        verbose:true,
         app: app,
         alDesconectar: function(){
             sesiones_http.splice(sesiones_http.indexOf(conector_http), 1);
@@ -51,7 +54,7 @@ io.sockets.on('connection', function (socket) {
     var conector_socket = new NodoConectorSocket({
         id: ultimo_id_sesion_ws.toString(),
         socket: socket, 
-        verbose: false, 
+        verbose: true, 
         alDesconectar:function(){
             sesiones_web_socket.splice(sesiones_web_socket.indexOf(conector_socket), 1);
         }
@@ -61,11 +64,11 @@ io.sockets.on('connection', function (socket) {
     router.conectarBidireccionalmenteCon(conector_socket);
 });
 
-io.configure(function () { 
-    io.set("transports", ['websocket', 'flashsocket', 'xhr-polling']); 
-    io.set("polling duration", 10); 
-    io.disable('log');
-});
+//io.configure(function () { 
+//    io.set("transports", ['websocket', 'flashsocket', 'xhr-polling']); 
+//    io.set("polling duration", 10); 
+//    io.disable('log');
+//});
 
 app.get('/infoSesiones', function(request, response){
     var info_sesiones = {

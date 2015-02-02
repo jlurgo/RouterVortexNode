@@ -48,7 +48,9 @@ FiltroXEjemplo.prototype = {
                 var filtro_por_ejemplo = new FiltroXEjemplo(this.ejemplo[prop]);
                 if(!filtro_por_ejemplo.evaluarMensaje(un_mensaje[prop])) return false;
             }
-            if(this.ejemplo[prop] != un_mensaje[prop]) return false;
+			else{
+            	if(this.ejemplo[prop] != un_mensaje[prop]) return false;
+			}
         }
         return true;
     },
